@@ -11,7 +11,7 @@ fn main() {
         xs.push(DVector::from_vec(vec![x]));
         ys.push(DVector::from_vec(vec![y]));
     }
-    let scatter = Scatter::create(xs, ys, Basis::Gaussian(1.0));
+    let scatter = Scatter::create(xs, ys, Basis::PolyHarmonic(3), 2);
     for i in 0..100 {
         let x = 0.02 * (i as f64);
         let y = scatter.eval(DVector::from_vec(vec![x]));
