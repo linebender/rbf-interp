@@ -68,11 +68,15 @@ impl Scatter {
         // n x m matrix. There's probably a better way to do this, ah well.
         let mut vals = DMatrix::from_columns(&vals).transpose();
         let n_aug = match order {
+            // Pure radial basis functions
             0 => n,
+            // Constant term
             1 => n + 1,
+            // Affine terms
             2 => n + 1 + centers[0].len(),
             _ => unimplemented!("don't yet support higher order polynomials"),
         };
+        // Augment to n' x m matrix, where n' is the total number of basis functions.
         if n_aug > n {
             vals = vals.resize_vertically(n_aug, 0.0);
         }
@@ -99,7 +103,7 @@ impl Scatter {
         // Note: it's probably better to use a decomposition rather than actually inverting
         // the matrix, see https://www.johndcook.com/blog/2010/01/19/dont-invert-that-matrix/
         // But for now the code is optimized for clarity.
-        // inv is an n x n matrix.
+        // inv is an n' x n' matrix.
         let inv = mat.try_inverse().expect("non-invertible matrix");
         // Again, this transpose feels like I don't know what I'm doing.
         let deltas = (inv * vals).transpose();
