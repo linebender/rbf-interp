@@ -1,12 +1,12 @@
 [package]
 name = "rbf-interp"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Raph Levien <raph.levien@gmail.com>"]
 license = "MIT/Apache-2.0"
 edition = "2018"
 keywords = ["interpolation", "scatter", "rbf"]
 categories = ["science"]
-respository = "https://github.com/linebender/rbf-interp"
+repository = "https://github.com/linebender/rbf-interp"
 readme = "README.md"
 description = "An implementation of Radial Basis Function multidimensional interpolation"
 
