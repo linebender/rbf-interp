@@ -1,7 +1,8 @@
 //! A reproduction of the example from the MutatorMath repo.
+
 use nalgebra::DVector;
 
-use scatter::{Basis, Scatter};
+use rbf_interp::{Basis, Scatter};
 
 const SAMPLES: &[([usize; 2], [u8; 3])] = &[
     ([11, 0], [128, 128, 128]),
@@ -31,8 +32,8 @@ fn main() {
     println!("255");
     for y in 0..height {
         for x in 0..width {
-            let u = (x as f64) * 0.05;
-            let v = (y as f64) * 0.05;
+            let u = ((x as f64) * 0.05).floor();
+            let v = ((y as f64) * 0.05).floor();
             let interp = scatter.eval(DVector::from_vec(vec![u, v]));
             let r = interp[0].round().max(0.0).min(255.0) as u8;
             let g = interp[1].round().max(0.0).min(255.0) as u8;
