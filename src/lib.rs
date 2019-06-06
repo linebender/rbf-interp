@@ -5,6 +5,8 @@ use nalgebra::{DMatrix, DVector};
 pub enum Basis {
     PolyHarmonic(i32),
     Gaussian(f64),
+    MultiQuadric(f64),
+    InverseMultiQuadric(f64),
 }
 
 pub struct Scatter {
@@ -33,6 +35,8 @@ impl Basis {
             // Note: it might be slightly more efficient to pre-recip c, but
             // let's keep code clean for now.
             Basis::Gaussian(c) => (-(r / c).powi(2)).exp(),
+            Basis::MultiQuadric(c) => r.hypot(*c),
+            Basis::InverseMultiQuadric(c) => (r * r + c * c).powf(-0.5),
         }
     }
 }
