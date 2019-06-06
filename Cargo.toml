@@ -8,6 +8,7 @@ keywords = ["interpolation", "scatter", "rbf"]
 categories = ["science"]
 respository = "https://github.com/linebender/rbf-interp"
 readme = "README.md"
+description = "An implementation of Radial Basis Function multidimensional interpolation"
 
 [dependencies]
 nalgebra = "0.18"
