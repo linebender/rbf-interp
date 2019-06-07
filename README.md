@@ -65,6 +65,12 @@ for variable fonts, as it provides choice over the tradeoff between smoothness (
 with overshoots) and local control. Curious people are encouraged to experiment with the
 `mutator` example in the examples directory.
 
+To run the example from a Unix shell:
+
+```
+cargo run --example mutator > image.ppm
+```
+
 ## Other resources
 
 The following articles were of interest:
