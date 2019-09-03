@@ -1,6 +1,6 @@
 //! A library for multidimensional interpolation.
 
-use nalgebra::{DMatrix, DVector};
+use nalgebra::{DMatrix, DVector, SVD};
 
 pub enum Basis {
     PolyHarmonic(i32),
@@ -103,12 +103,11 @@ impl Scatter {
                 0.0
             }
         });
-        // TODO: plumb errors
-        // Note: it's probably better to use a decomposition rather than actually inverting
-        // the matrix, see https://www.johndcook.com/blog/2010/01/19/dont-invert-that-matrix/
-        // But for now the code is optimized for clarity.
         // inv is an n' x n' matrix.
-        let inv = mat.try_inverse().expect("non-invertible matrix");
+        let svd = SVD::new(mat, true, true);
+        // Use pseudo-inverse here to get "least squares fit" when there's
+        // no unique result (for example, when dimensionality is too small).
+        let inv = svd.pseudo_inverse(1e-6).expect("error inverting matrix");
         // Again, this transpose feels like I don't know what I'm doing.
         let deltas = (inv * vals).transpose();
         Scatter {
