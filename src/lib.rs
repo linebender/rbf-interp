@@ -84,6 +84,18 @@ impl Scatter {
         if n_aug > n {
             vals = vals.resize_vertically(n_aug, 0.0);
         }
+        // We translate the system to center the mean at the origin so that when
+        // the system is degenerate, the pseudoinverse below minimizes the linear
+        // coefficients.
+        let means: Vec<_> = if order == 2 {
+            let n = centers.len();
+            let n_recip = (n as f64).recip();
+            (0..centers[0].len())
+                .map(|i| centers.iter().map(|c| c[i]).sum::<f64>() * n_recip)
+                .collect()
+        } else {
+            Vec::new()
+        };
         let mat = DMatrix::from_fn(n_aug, n_aug, |r, c| {
             if r < n && c < n {
                 basis.eval((&centers[r] - &centers[c]).norm())
@@ -91,13 +103,13 @@ impl Scatter {
                 if c == n {
                     1.0
                 } else {
-                    centers[r][c - n - 1]
+                    centers[r][c - n - 1] - means[c - n - 1]
                 }
             } else if c < n {
                 if r == n {
                     1.0
                 } else {
-                    centers[c][r - n - 1]
+                    centers[c][r - n - 1] - means[r - n - 1]
                 }
             } else {
                 0.0
@@ -109,7 +121,14 @@ impl Scatter {
         // no unique result (for example, when dimensionality is too small).
         let inv = svd.pseudo_inverse(1e-6).expect("error inverting matrix");
         // Again, this transpose feels like I don't know what I'm doing.
-        let deltas = (inv * vals).transpose();
+        let mut deltas = (inv * vals).transpose();
+        if order == 2 {
+            let m = centers[0].len();
+            for i in 0..deltas.nrows() {
+                let offset: f64 = (0..m).map(|j| means[j] * deltas[(i, n + 1 + j)]).sum();
+                deltas[(i, n)] -= offset;
+            }
+        }
         Scatter {
             basis,
             centers,

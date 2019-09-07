@@ -21,7 +21,9 @@ fn main() {
         .collect::<Vec<_>>();
     let colors = SAMPLES
         .iter()
-        .map(|(_loc, color)| DVector::from_vec(vec![color[0] as f64, color[1] as f64, color[2] as f64]))
+        .map(|(_loc, color)| {
+            DVector::from_vec(vec![color[0] as f64, color[1] as f64, color[2] as f64])
+        })
         .collect::<Vec<_>>();
     let scatter = Scatter::create(locs, colors, Basis::PolyHarmonic(2), 2);
     let width = 460;
